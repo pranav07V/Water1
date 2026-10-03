@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
 <title>Sign in — Chocolate Quality Tracker</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,7 +73,7 @@
    CONFIG — fill these in after you have both URLs.
 ========================================================= */
 // The OAuth Client ID from Google Cloud Console. Must be the SAME
-// value used in APPS_SCRIPT_URL's Code.gs (CONFIG.GOOGLE_CLIENT_ID).
+// value as CONFIG.GOOGLE_CLIENT_ID in Code.gs.
 const GOOGLE_CLIENT_ID = "167756359063-72sktnlvmhacm43hsgc49p8mhpnebnl4.apps.googleusercontent.com";
 
 // Your deployed Apps Script web app URL, e.g.
@@ -96,8 +97,10 @@ window.onload = function () {
   }
   google.accounts.id.initialize({
     client_id: GOOGLE_CLIENT_ID,
-    callback: handleCredentialResponse
+    callback: handleCredentialResponse,
+    auto_select: false
   });
+  google.accounts.id.disableAutoSelect(); // after "Sign out", don't silently sign the same account straight back in
   google.accounts.id.renderButton(document.getElementById("gsiButton"), { theme: "outline", size: "large", shape: "pill" });
 };
 
@@ -106,8 +109,18 @@ function handleCredentialResponse(response) {
     showErr("Sign-in did not return a token. Please try again.");
     return;
   }
-  const target = APPS_SCRIPT_URL + "?token=" + encodeURIComponent(response.credential);
-  window.location.href = target;
+  // POST the token instead of putting it in the URL: it then never lands in the
+  // address bar, browser history or a copied link. (Needs doPost in Code.gs.)
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = APPS_SCRIPT_URL;
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "token";
+  input.value = response.credential;
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
 }
 </script>
 </body>
