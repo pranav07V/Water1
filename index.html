@@ -49,6 +49,17 @@
     content:"";position:absolute;top:0;left:0;right:0;height:3px;
     background:var(--caramel);border-radius:3px 3px 0 0;
   }
+  
+  /* NEW: Style specifically for your image inside the card */
+  .card-img {
+    max-width: 100%;       /* Keeps it responsive on all mobile screens */
+    height: auto;          /* Maintains the aspect ratio so it doesn't stretch */
+    display: block;
+    margin: 0 auto 20px;   /* Centers the image and adds space below it */
+    border-radius: 4px;    /* Soft corners to match your card layout */
+    border: 1px solid var(--line); /* Uses your custom border color variable */
+  }
+
   .kicker{font-size:11px;letter-spacing:0.02em;color:var(--ink-faint);margin-bottom:6px;}
   h1{font-family:var(--serif);font-weight:600;font-size:21px;margin:0 0 8px;}
   p.sub{color:var(--ink-soft);font-size:13.5px;margin:0 0 26px;}
@@ -73,7 +84,7 @@
 </head>
 <body>
   <div class="card">
-    <img src="logo.png" alt="Logo">
+    <img src="logo.png" alt="Logo" class="card-img">
     <div class="kicker">Samples Collection log</div>
     <h1>SCR Drinking Water Sample Collection</h1>
     <p class="sub" id="subText">Sign in with your Google account to continue.</p>
